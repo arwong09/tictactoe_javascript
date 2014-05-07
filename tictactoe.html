@@ -1,0 +1,175 @@
+<html>
+<head>
+  <style>
+  body, h1 {
+    font-family: "Helvetica Neue";
+    font-weight: 100;
+  }
+  .board{
+    z-index: 0;
+    width: 612px;
+    height: 612px;
+    margin: 150px auto;
+  }
+  .grid{
+    z-index: 0;
+    border: 2px solid white;
+    background-color: #eee;
+    float: left;
+    color: white;
+  }
+  #top {
+    margin-top: 100px;
+    margin-bottom: -100px;
+  }
+  #new_game {
+    font-family: "Helvetica Neue";
+    font-weight: 100;
+    margin-left: 24.2%;
+    margin-top: 10%;
+    float: left;
+    font-size: 12px;
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px;
+  }
+
+   #outer div:hover {
+    cursor: pointer;
+    border: none;
+    font-weight: 300;
+  }
+  .board canvas:hover {
+    cursor: pointer;
+  }
+  </style>
+</head>
+<body>
+  <h1 id="top"><center>Tic-Tac-Toe</center></h1>
+<!-- <canvas width = "900" height = "900" id = "canvas"> </canvas>
+
+<script>
+var canvas = document.getElementById("canvas");
+var c = canvas.getContext("2d");
+for(var i = 0; i < 3; i++){
+  for(var j = 0; j < 3; j++){
+    c.fillRect(i * 300, j * 300, i * 300 + 300, j * 300 + 300);
+  }
+}
+</script> -->
+<h1 style="position: fixed; bottom: 20px; left: calc(50% - 57px);"><center id="result"> </center> </h1>
+<div id="outer"><div style="background-color: white; border-radius: 3px;" id="new_game"> New Game </div></div>
+<div class="board" id="board">
+
+</div>
+
+<script>
+var turn = false;
+var clicked = {};
+
+function setMark(element){
+  if(clicked[String(element.id)] == undefined)
+    {
+      if (!turn) {
+        var context = element.getContext('2d');
+        var centerX = element.width / 2;
+        var centerY = element.height / 2;
+        var radius = 70;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+        context.lineWidth = 6;
+        context.strokeStyle = 'red';
+        context.stroke();
+      } else {
+        var context = element.getContext('2d');
+        var centerX = element.width / 2;
+        var centerY = element.height / 2;
+        context.beginPath();
+        context.moveTo(30,30);
+        context.lineTo(170,170);
+        context.lineWidth = 6;
+        context.strokeStyle = 'blue';
+        context.stroke();
+        context.beginPath();
+        context.moveTo(30,170);
+        context.lineTo(170,30);
+        context.lineWidth = 6;
+        context.strokeStyle = 'blue';
+        context.stroke();
+      }
+      clicked[String(element.id)] = turn === true ? "X" : "O";
+      checkWinner();
+      turn = !turn;
+    }
+}
+
+var grids = Array(9);
+
+for(var j = 0; j < 9; j++){
+  (function(){
+    var i = j;
+    grids[i] = document.createElement('canvas');
+    grids[i].width = 200;
+    grids[i].height = 200;
+    grids[i].style.border = "1px solid white";
+    grids[i].className = "grid";
+    grids[i].id = "grid" + (i + 1);
+    grids[i].addEventListener("click", function(){
+       setMark(grids[i])
+    }, false);
+    document.getElementById("board").appendChild(grids[i]);
+   })();
+}
+
+
+function checkWinner(){
+  var lines = [
+  [clicked['grid1'], clicked['grid2'], clicked['grid3']],
+  [clicked['grid4'], clicked['grid5'], clicked['grid6']],
+  [clicked['grid7'], clicked['grid8'], clicked['grid9']],
+  [clicked['grid1'], clicked['grid4'], clicked['grid7']],
+  [clicked['grid2'], clicked['grid5'], clicked['grid8']],
+  [clicked['grid3'], clicked['grid6'], clicked['grid9']],
+  [clicked['grid1'], clicked['grid5'], clicked['grid9']],
+  [clicked['grid3'], clicked['grid5'], clicked['grid7']]
+  ];
+
+  for(var i = 0; i < lines.length ; i++ ){
+    if( lines[i].compare(["O","O","O"])) {
+      document.getElementById("result").innerHTML = "O Wins!";
+      for(var i = 0; i < grids.length; i++) {
+        clicked[String(grids[i].id)] = "O";
+      }
+    }else if ( lines[i].compare(["X","X","X"])) {
+      document.getElementById("result").innerHTML = "X Wins!";
+      for(var i = 0; i < grids.length; i++) {
+        clicked[String(grids[i].id)] = "X";
+      }
+    }
+  }
+}
+
+
+Array.prototype.compare = function (that) {
+  if(this.length != that.length) { return false; }
+  else{
+    for(var i = 0; i < this.length; i++){
+      if(this[i] != that[i]){
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+document.getElementById("new_game").addEventListener('click', function() {
+  location.reload();
+});
+
+
+
+</script>
+
+
+</body>
+</html>
